@@ -100,9 +100,8 @@ function executeCommand(string $command)
       // https://www.php.net/manual/en/function.passthru.php
       ob_start();
       passthru($command, $return_var);
-      $output = ob_get_contents();
-      ob_end_clean();
-      return;
+      ob_flush();
+      return true;
    }
 
    if (function_exists('system')) {
