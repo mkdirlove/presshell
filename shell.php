@@ -5,7 +5,7 @@
  * Plugin URI: https://github.com/scheatkode/wordsh
  * Description: Execute shell commands on your wordpress server
  * Author: scheatkode
- * Version: 0.3
+ * Version: 0.4.0
  * Author URI: https://scheatkode.github.io
  */
 
