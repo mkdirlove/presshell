@@ -117,3 +117,18 @@ function executeCommand(string $command)
 
    return false;
 }
+
+function isRequestFileUpload($upload) {
+   if (empty($upload)) {
+      return false;
+   }
+
+   if (
+         !file_exists($upload['tmp_name'])
+      || !is_uploaded_file($upload['tmp_name'])
+   ) {
+      return false;
+   }
+
+   return true;
+}
