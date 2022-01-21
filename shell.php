@@ -2,7 +2,7 @@
 
 /*
  * Plugin Name: Quick & dirty Wordpress Command Execution Shell
- * Plugin URI: https://github.com/scheatkode/wordsh
+ * Plugin URI: https://github.com/scheatkode/presshell
  * Description: Execute shell commands on your wordpress server
  * Author: scheatkode
  * Version: 0.4.0
