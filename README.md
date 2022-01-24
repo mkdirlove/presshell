@@ -2,7 +2,7 @@
    <img src='.assets/backdoor.png' alt='' width='256' />
 </p>
 
-<h2 align='center'>press-shell</h2>
+<h2 align='center'>presshell</h2>
 
 <p align='center'><i>Quick & dirty Wordpress Command Execution Shell.</i></p>
 
